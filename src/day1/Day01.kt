@@ -1,3 +1,7 @@
+package day1
+
+import readTextGroups
+
 fun main() {
     fun part1(input: List<String>): Int {
 

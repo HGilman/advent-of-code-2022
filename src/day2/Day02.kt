@@ -1,5 +1,8 @@
-import Chain.getFightPoints
-import Chain.getSignForResult
+package day2
+
+import day2.Chain.getFightPoints
+import day2.Chain.getSignForResult
+import readInput
 
 sealed class Result {
     companion object {
