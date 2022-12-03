@@ -24,7 +24,7 @@ fun main() {
 //    val testInput = readInput("Day01_test")
 //    check(part1(testInput) == 1)
 
-    val input = readTextGroups("Day01")
+    val input = readTextGroups("day1/Day01")
 
     println(part1(input))
     println(part2(input))
