@@ -115,13 +115,11 @@ fun main() {
         return getPoints(signs)
     }
 
-//  test if implementation meets criteria from the description, like:
     val testInput = readInput("day2/Day02_test")
     println(part1(testInput))
     check(part1(testInput) == 15)
 
     val input = readInput("day2/Day02")
-//
     println(part1(input))
     println(part2(input))
 }

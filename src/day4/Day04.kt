@@ -4,7 +4,6 @@ import readInput
 import kotlin.math.max
 
 fun main() {
-//  test if implementation meets criteria from the description, like:
     val testInput = readInput("day4/Day04_test")
     check(part1(testInput) == 2)
 

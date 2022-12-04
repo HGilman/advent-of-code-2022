@@ -11,7 +11,7 @@ fun main() {
             val secondCompartment = rucksack.substring(compartmentSize)
 
             // actually there is no need to make full intersection,
-            // it is enoght to find first symbol, that is contained in both parts
+            // it is enough to find first symbol, that is contained in both parts
             val commonSymbols = firstCompartment.toSet() intersect secondCompartment.toSet()
             commonSymbols.first().priority()
 
@@ -34,7 +34,6 @@ fun main() {
         }
     }
 
-//  test if implementation meets criteria from the description, like:
     val testInput = readInput("day3/Day03_test")
     check(part1(testInput) == 157)
 
