@@ -30,7 +30,6 @@ fun part1(input: List<String>) = parseInput(input).count { (f, s) ->
     f.union(s).size == max(f.last - f.first, s.last - s.first) + 1
 }
 
-
 fun part2(input: List<String>) = parseInput(input).count { (f, s) ->
     f.intersect(s).isNotEmpty()
 }
