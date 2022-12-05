@@ -4,12 +4,12 @@ import readTextGroups
 import java.util.*
 
 fun main() {
-    val testInput: List<String> = readTextGroups("day5/Day05_test")
-    check(Day.part1(getStacks(testInput[0]), getProcedure(testInput[1])) == "CMZ")
+    val (testStacksInput, testProcedureInput) = readTextGroups("day5/Day05_test")
+    check(Day.part1(getStacks(testStacksInput), getProcedure(testProcedureInput)) == "CMZ")
 
-    val input: List<String> = readTextGroups("day5/Day05")
-    println(Day.part1(getStacks(input[0]), getProcedure(input[1])))
-    println(Day.part2(getStacks(input[0]), getProcedure(input[1])))
+    val (stackInput, procedureInput)= readTextGroups("day5/Day05")
+    println(Day.part1(getStacks(stackInput), getProcedure(procedureInput)))
+    println(Day.part2(getStacks(stackInput), getProcedure(procedureInput)))
 }
 
 fun getStacks(firstPartInput: String): List<Stack<Char>> {
