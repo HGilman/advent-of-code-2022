@@ -1,17 +1,20 @@
 fun main() {
     val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
+    check(Day.part1(testInput) == 1)
 
     val input = readInput("Day01")
 
-    println(part1(input))
-    println(part2(input))
+    println(Day.part1(input))
+    println(Day.part2(input))
 }
 
-fun part1(input: List<String>): Int {
-    return input.size
-}
+object Day {
 
-fun part2(input: List<String>): Int {
-    return input.size
+    fun part1(input: List<String>): Int {
+        return input.size
+    }
+
+    fun part2(input: List<String>): Int {
+        return input.size
+    }
 }
