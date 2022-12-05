@@ -72,7 +72,7 @@ object Day {
             val fromStack = stacks[from]
             val toStack = stacks[to]
 
-            for (i in 0 until amount) {
+            repeat(amount) {
                 if (fromStack.isNotEmpty()) {
                     toStack.push(fromStack.pop())
                 }
@@ -91,13 +91,13 @@ object Day {
 
             val popArray = mutableListOf<Char>()
 
-            for (i in 0 until amount) {
+            repeat(amount) {
                 if (fromStack.isNotEmpty()) {
                     popArray.add(fromStack.pop())
                 }
             }
 
-            for (pop in popArray.reversed()) {
+            popArray.reversed().forEach { pop ->
                 toStack.push(pop)
             }
         }
