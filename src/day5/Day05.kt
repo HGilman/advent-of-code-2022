@@ -20,12 +20,12 @@ fun getStacks(firstPartInput: String): List<Stack<Char>> {
         .last { it.isDigit() }
         .digitToInt()
 
-    // don't take last string
-    val stackData = firstPartData.subList(0, firstPartData.size - 1)
-
     val stacks = List<Stack<Char>>(stackAmount) {
         Stack()
     }
+
+    // don't take last string
+    val stackData = firstPartData.dropLast(1)
 
     // go from bottom to top
     stackData
