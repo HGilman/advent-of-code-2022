@@ -15,12 +15,12 @@ fun main() {
 fun getStacks(firstPartInput: String): List<Stack<Char>> {
     val firstPartData: List<String> = firstPartInput.split("\n")
 
-    // don't take last string
     val stackAmount = firstPartData
         .last()
         .last { it.isDigit() }
         .digitToInt()
 
+    // don't take last string
     val stackData = firstPartData.subList(0, firstPartData.size - 1)
 
     val stacks = List<Stack<Char>>(stackAmount) {
