@@ -30,12 +30,12 @@ fun getStacks(firstPartInput: String): List<Stack<Char>> {
     // go from bottom to top
     stackData
         .reversed()
-        .forEach { sd ->
+        .forEach { line ->
             for (i in 0 until stackAmount) {
                 val symbolIndex = (1 + i * 4)
 
-                if (symbolIndex < sd.length) {
-                    val symbol = sd[symbolIndex]
+                if (symbolIndex < line.length) {
+                    val symbol = line[symbolIndex]
                     if (!symbol.isWhitespace()) {
                         stacks[i].push(symbol)
                     }
