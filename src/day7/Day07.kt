@@ -33,33 +33,22 @@ object Day {
         val folderStack = Stack<Folder>()
         folderStack.push(root)
 
-        fun curRoot() = folderStack.peek()
-
         fun String.isLS() = equals("$ ls")
-
         fun String.isCD() = startsWith("$ cd")
-
         fun String.getCdName() = substringAfter("$ cd ")
-
         fun String.isBack() = getCdName() == ".."
 
         input.drop(1).forEach { line ->
+            val currentFolder = folderStack.peek()
             when {
                 line.isLS() -> return@forEach
-
-                line.isFolder() -> {
-                    val folder = line.toFolder()
-                    curRoot().nodes[folder.name] = folder
-                }
-                line.isFile() -> {
-                    val file = line.toFile()
-                    curRoot().nodes[file.name] = file
-                }
+                line.isFolder() -> currentFolder.nodes.add(line.toFolder())
+                line.isFile() -> currentFolder.nodes.add(line.toFile())
                 line.isCD() -> {
                     if (line.isBack()) {
                         folderStack.pop()
                     } else {
-                        val innerFolder = curRoot().nodes[line.getCdName()] as Folder
+                        val innerFolder = currentFolder.nodes.first { it.name == line.getCdName() } as Folder
                         folderStack.push(innerFolder)
                     }
                 }
@@ -67,7 +56,6 @@ object Day {
         }
         return root
     }
-
 
     fun part1(root: Folder): Int {
         val acc = mutableListOf<Pair<Node, Int>>()
@@ -86,21 +74,17 @@ object Day {
         return acc.first().second
     }
 
-
-    sealed class Node(open val name: String) {
+    sealed class Node(val name: String) {
 
         fun print() {
             println(getString())
         }
 
         private fun getString(indentCount: Int = 0): String {
-
             val indention = (0 until indentCount).joinToString("") { " " }
             return indention + (when (this) {
-
                 is Folder -> {
-                    val childPrint = nodes.entries.joinToString("") { it.value.getString(indentCount + 2) }
-
+                    val childPrint = nodes.joinToString("") { it.getString(indentCount + 2) }
                     "- $name (dir)\n$childPrint"
                 }
 
@@ -110,15 +94,7 @@ object Day {
             })
         }
 
-        fun getTotalSize(): Int {
-
-            return when (this) {
-                is File -> size
-                is Folder -> {
-                    nodes.entries.sumOf { it.value.getTotalSize() }
-                }
-            }
-        }
+        abstract fun getTotalSize(): Int
 
         fun findFoldersInSizeOf(maxTotal: Int, acc: MutableList<Pair<Node, Int>>) {
             when (this) {
@@ -129,8 +105,8 @@ object Day {
                     if (total <= maxTotal) {
                         acc.add(this to total)
                     }
-                    nodes.entries.forEach {
-                        it.value.findFoldersInSizeOf(maxTotal, acc)
+                    nodes.forEach {
+                        it.findFoldersInSizeOf(maxTotal, acc)
                     }
                 }
             }
@@ -145,8 +121,8 @@ object Day {
                     if (total >= amount) {
                         acc.add(this to total)
 
-                        nodes.entries.forEach {
-                            it.value.findFoldersBiggerThen(amount, acc)
+                        nodes.forEach {
+                            it.findFoldersBiggerThen(amount, acc)
                         }
                     }
                 }
@@ -155,7 +131,9 @@ object Day {
 
     }
 
-    data class File(override val name: String, val size: Int) : Node(name) {
+    class File(name: String, val size: Int) : Node(name) {
+
+        override fun getTotalSize() = size
 
         companion object {
             private val fileRegexp = """(\d+)\s([a-z]+\.*[a-z]*)""".toRegex()
@@ -171,7 +149,9 @@ object Day {
         }
     }
 
-    data class Folder(override val name: String, val nodes: MutableMap<String, Node>) : Node(name) {
+    class Folder(name: String, val nodes: MutableList<Node>) : Node(name) {
+
+        override fun getTotalSize() = nodes.sumOf { it.getTotalSize() }
 
         companion object {
             fun String.isFolder() = startsWith("dir") || equals("/")
@@ -187,7 +167,8 @@ object Day {
                     }
                 }
             }
-            fun String.toFolder() = Folder(folderName()!!, mutableMapOf())
+
+            fun String.toFolder() = Folder(folderName()!!, mutableListOf())
         }
     }
 }
