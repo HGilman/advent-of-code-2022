@@ -1,9 +1,9 @@
 fun main() {
-    val testInput = readInput("Day01_test")
+    val day = 1
+    val testInput = readInput("day$day/testInput")
     check(part1(testInput) == 1)
 
-    val input = readInput("Day01")
-
+    val input = readInput("day$day/input")
     println(part1(input))
     println(part2(input))
 }

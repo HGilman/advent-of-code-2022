@@ -22,7 +22,7 @@ fun main() {
 
     // test if implementation meets criteria from the description, like:
 //    val testInput = readInput("Day01_test")
-//    check(part1(testInput) == 1)
+//    check(day9.part1(testInput) == 1)
 
     val input = readTextGroups("day1/Day01")
 
