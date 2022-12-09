@@ -41,10 +41,12 @@ fun Point.updateHead(dir: Char): Point {
     }
 }
 
-fun Point.followIfBeyond(f: Point, distance: Double = 1.5): Point? {
-    return if (this.distanceTo(f) < distance) {
-        null
-    } else Point(
+fun Point.isAdjacent(p: Point): Boolean {
+    return this.distanceTo(p) < 1.5
+}
+
+fun Point.follow(f: Point): Point {
+    return Point(
         x + sign(f.x - x.toDouble()).toInt() * min(abs(f.x - x), 1),
         y + sign(f.y - y.toDouble()).toInt() * min(abs(f.y - y), 1)
     )
@@ -53,7 +55,7 @@ fun Point.followIfBeyond(f: Point, distance: Double = 1.5): Point? {
 fun followHead(ropeSize: Int, moves: List<Pair<Char, Int>>): Int {
 
     val rope = MutableList(ropeSize) { Point(0, 0) }
-    val tailPoints = HashSet<Point>().apply {
+    val tailPoints = hashSetOf<Point>().apply {
         add(rope.last())
     }
 
@@ -63,15 +65,17 @@ fun followHead(ropeSize: Int, moves: List<Pair<Char, Int>>): Int {
 
             for (i in 1 until ropeSize) {
 
-                rope[i].followIfBeyond(rope[i - 1])?.let {
-                    rope[i] = it
+                if (!rope[i].isAdjacent(rope[i - 1])) {
+                    rope[i] = rope[i].follow(rope[i - 1])
+
                     if (i == ropeSize - 1) {
                         tailPoints.add(rope.last())
                     }
-                } ?: break
-
+                } else {
+                    break
+                }
             }
         }
     }
-    return tailPoints.count()
+    return tailPoints.size
 }

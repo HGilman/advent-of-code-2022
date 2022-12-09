@@ -20,9 +20,13 @@ data class Point(val x: Int, val y: Int) {
         return distance(this, p)
     }
 
+
+
     companion object {
         fun distance(p1: Point, p2: Point): Double {
             return sqrt((p2.x.toDouble() - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y))
         }
     }
 }
+
+data class Vector2D(val x: Int, val y: Int)
