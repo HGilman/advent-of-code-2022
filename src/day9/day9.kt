@@ -24,11 +24,11 @@ fun getMoves(input: List<String>): List<Pair<Char, Int>> {
 }
 
 fun part1(input: List<String>): Int {
-    return followHead(1, getMoves(input))
+    return followHead(2, getMoves(input))
 }
 
 fun part2(input: List<String>): Int {
-    return followHead(9, getMoves(input))
+    return followHead(10, getMoves(input))
 }
 
 fun Point.updateHead(dir: Char): Point {
@@ -53,33 +53,23 @@ fun Point.followIfBeyond(f: Point, distance: Double = 1.5): Point? {
 fun followHead(ropeSize: Int, moves: List<Pair<Char, Int>>): Int {
 
     val rope = MutableList(ropeSize) { Point(0, 0) }
-
     val tailPoints = HashSet<Point>().apply {
         add(rope.last())
     }
 
-    var head = Point(0, 0)
-
-    for (m in moves) {
-        val (dir, steps) = m
-
+    for ((dir, steps) in moves) {
         repeat(steps) {
-            val newHead = head.updateHead(dir)
-            head = newHead
+            rope[0] = rope[0].updateHead(dir)
 
-            var toFollow = newHead
+            for (i in 1 until ropeSize) {
 
-            for (i in 0 until ropeSize) {
-                val newToFallow = rope[i].followIfBeyond(toFollow)
+                rope[i].followIfBeyond(rope[i - 1])?.let {
+                    rope[i] = it
+                    if (i == ropeSize - 1) {
+                        tailPoints.add(rope.last())
+                    }
+                } ?: break
 
-                if (newToFallow != null) {
-                    rope[i] = newToFallow
-                    toFollow = newToFallow
-
-                    tailPoints.add(rope.last())
-                } else {
-                    break
-                }
             }
         }
     }
