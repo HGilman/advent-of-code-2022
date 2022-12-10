@@ -20,7 +20,13 @@ data class Point(val x: Int, val y: Int) {
         return distance(this, p)
     }
 
+    operator fun Point.plus(vec: Vector2D): Point {
+        return Point(x + vec.x, y + vec.y)
+    }
 
+    operator fun Point.minus(other: Point): Vector2D {
+        return Vector2D(x - other.x, y - other.y)
+    }
 
     companion object {
         fun distance(p1: Point, p2: Point): Double {
