@@ -1,6 +1,6 @@
 package day9
 
-import lib.Point
+import lib.Point2D
 import readInput
 import kotlin.math.abs
 import kotlin.math.min
@@ -31,7 +31,7 @@ fun part2(input: List<String>): Int {
     return followHead(10, getMoves(input))
 }
 
-fun Point.updateHead(dir: Char): Point {
+fun Point2D.updateHead(dir: Char): Point2D {
     return when (dir) {
         'R' -> toRight()
         'L' -> toLeft()
@@ -41,12 +41,12 @@ fun Point.updateHead(dir: Char): Point {
     }
 }
 
-fun Point.isAdjacent(p: Point): Boolean {
+fun Point2D.isAdjacent(p: Point2D): Boolean {
     return this.distanceTo(p) < 1.5
 }
 
-fun Point.follow(f: Point): Point {
-    return Point(
+fun Point2D.follow(f: Point2D): Point2D {
+    return Point2D(
         x + sign(f.x - x.toDouble()).toInt() * min(abs(f.x - x), 1),
         y + sign(f.y - y.toDouble()).toInt() * min(abs(f.y - y), 1)
     )
@@ -54,8 +54,8 @@ fun Point.follow(f: Point): Point {
 
 fun followHead(ropeSize: Int, moves: List<Pair<Char, Int>>): Int {
 
-    val rope = MutableList(ropeSize) { Point(0, 0) }
-    val tailPoints = hashSetOf<Point>().apply {
+    val rope = MutableList(ropeSize) { Point2D(0, 0) }
+    val tailPoints = hashSetOf<Point2D>().apply {
         add(rope.last())
     }
 
