@@ -1,116 +1,99 @@
 package day12
 
 import lib.Point2D
+import lib.directionsClockwise
 import readInput
-
+import java.util.LinkedList
+import kotlin.math.min
 
 fun main() {
-    val day = 12
-//    val testInput = readInput("day$day/testInput")
-//    check(part1(testInput) == 31)
 
-    val input = readInput("day$day/input")
-    println(part1(input))
-//    println(part2(input))
-}
+    val input = readInput("day12/input")
+    val h = input.size
+    val w = input[0].length
 
-fun getHeight(c: Char): Int {
-    return when (c) {
-        'S' -> getHeight('a')
-        'E' -> getHeight('z')
-        else -> c - 'a'
-    }
-}
+    var start = Point2D(0, 0)
+    var end = Point2D(0, 0)
 
-fun part1(input: List<String>): Int {
-
-    val height = input.size
-    val width = input[0].toCharArray().size
-
-    var sX: Int = 0
-    var sY: Int = 0
-
-    var eX: Int = 0
-    var eY: Int = 0
-
-    val map = List<List<Int>>(height) { y ->
-        List<Int>(width) { x ->
-            val c = input[y][x]
-
-            if (c == 'S') {
-                sX = x
-                sY = y
-            } else if (c == 'E') {
-                eX = x
-                eY = y
+    val heights = List(h) { y ->
+        List(w) { x ->
+            val char = input[y][x]
+            val point = Point2D(x, y)
+            if (char == 'S') {
+                start = point
             }
-            getHeight(c)
-        }
-    }
-
-    fun isPointOnMap(p: Point2D): Boolean {
-        return (p.x in (0 until width)) && (p.y in (0 until height))
-    }
-
-    fun dfsA(point: Point2D, destination: Point2D, path: LinkedHashMap<Point2D, Char>) {
-
-        if (point == destination) {
-            return
-        }
-
-        // try to go four different directions
-        val left = point.toLeft() to '<'
-        val right = point.toRight() to '>'
-        val up = point.higher() to 'v'
-        val low = point.lower() to '^'
-
-        // heuristics : find point which is nearest to destination, and also possible to go
-
-        val directions = listOf(left, right, up, low)
-
-        val preferedDirection = directions.mapIndexed { i, dir ->
-
-            if (isPointOnMap(dir.first)) {
-                val currentHeight = map[point.y][point.x]
-                val directionHeight = map[dir.first.y][dir.first.x]
-                val isPossibleDir = (directionHeight - currentHeight <= 1) && !path.contains(dir.first)
-                Pair(dir, isPossibleDir)
-            } else {
-                null
+            if (char == 'E') {
+                end = point
             }
-        }.filterNotNull().filter { it.second }.minByOrNull { it.first.first.distanceTo(destination) }?.first ?: return
-
-        path[point] = preferedDirection.second
-
-        dfsA(preferedDirection.first, destination, path)
-    }
-
-    val path = linkedMapOf<Point2D, Char>()
-    dfsA(Point2D(sX, sY), Point2D(eX, eY), path)
-
-    for (y in 0 until height) {
-        for (x in 0 until width) {
-            val h = map[y][x].toString()
-            val s = (if (h.length == 1) "$h " else h) + " "
-            print(s)
+            height(char)
         }
-        println()
     }
 
-    println()
+    fun shortestDistance(start: Point2D, end: Point2D): Int {
 
-    for (y in 0 until height) {
-        for (x in 0 until width) {
-            val c = path[Point2D(x, y)] ?: "."
-            print("$c ")
+        val distances: List<MutableList<Int>> = List(h) {
+            MutableList(w) { Int.MAX_VALUE }
         }
-        println()
-    }
+        distances[start.y][start.x] = 0
 
-    println(path.size)
-    return path.size
+        val queue = LinkedList<Point2D>()
+        queue.offer(start)
+
+        var res = Int.MAX_VALUE
+
+        while (queue.isNotEmpty()) {
+
+            val currentPoint = queue.poll()
+
+            if (currentPoint == end) {
+                res = distances[currentPoint.y][currentPoint.x]
+                break
+            }
+
+            for (d in directionsClockwise) {
+                val newPoint = currentPoint + d
+                if (newPoint.x in 0 until w && newPoint.y in 0 until h) {
+
+                    if (heights[newPoint.y][newPoint.x] - heights[currentPoint.y][currentPoint.x] <= 1) {
+                        val newDistance = distances[currentPoint.y][currentPoint.x] + 1
+
+                        if (newDistance < distances[newPoint.y][newPoint.x]) {
+                            distances[newPoint.y][newPoint.x] = newDistance
+                            queue.offer(newPoint)
+                        }
+                    }
+                }
+            }
+        }
+        return res
+    }
+    println(shortestDistance(start, end))
+
+    var ans = Int.MAX_VALUE
+
+    for (y in 0 until h) {
+        for (x in 0 until w) {
+            if (input[y][x] == 'a') {
+                ans = min(ans, shortestDistance(Point2D(x, y), end))
+            }
+        }
+    }
+    println(ans)
 }
 
-fun part2(input: List<String>): Int {
-    return input.size
+fun height(c: Char): Int {
+    val char: Char = when (c) {
+        'S' -> {
+            'a'
+        }
+
+        'E' -> {
+            'z'
+        }
+
+        else -> {
+            c
+        }
+    }
+    return char - 'a'
 }

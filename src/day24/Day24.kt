@@ -11,23 +11,19 @@ import readInput
 
 fun main() {
     val day = 24
-    val testInput = readInput("day$day/testInput")
-    check(part1(testInput) == 18)
+//    val testInput = readInput("day$day/testInput")
+//    check(part1(testInput) == 18)
 
     val input = readInput("day$day/input")
-    println(part1(input))
-//    println(part2(input))
+//    println(part1(input))
+    println(part2(input))
 }
 
-fun part1(input: List<String>): Int {
+fun readWinds(input: List<String>): MutableList<Pair<Point2D, Vector2D>> {
+    val winds = mutableListOf<Pair<Point2D, Vector2D>>()
 
     val h = input.size
     val w = input[0].length
-
-    val start = Point2D(1, 0)
-    val destination = Point2D(w - 2, h - 1)
-
-    val winds = mutableListOf<Pair<Point2D, Vector2D>>()
 
     (0 until h).forEach { y ->
         (0 until w).forEach { x ->
@@ -47,32 +43,44 @@ fun part1(input: List<String>): Int {
             }
         }
     }
+    return winds
+}
 
-    fun updateWindsPosition() {
-        for (i in winds.indices) {
-            val wind = winds[i]
-            val newPosition = wind.first + wind.second
-            var x = newPosition.x
-            var y = newPosition.y
+fun updateWindPositions(winds: MutableList<Pair<Point2D, Vector2D>>, w: Int, h: Int) {
+    for (i in winds.indices) {
+        val wind = winds[i]
+        val newPosition = wind.first + wind.second
+        var x = newPosition.x
+        var y = newPosition.y
 
-            if (x < 1) {
-                x = (w - 2)
-            }
-
-            if (x > w - 2) {
-                x = 1
-            }
-
-            if (y < 1) {
-                y = (h - 2)
-            }
-
-            if (y > h - 2) {
-                y = 1
-            }
-            winds[i] = Point2D(x, y) to wind.second
+        if (x < 1) {
+            x = (w - 2)
         }
+
+        if (x > w - 2) {
+            x = 1
+        }
+
+        if (y < 1) {
+            y = (h - 2)
+        }
+
+        if (y > h - 2) {
+            y = 1
+        }
+        winds[i] = Point2D(x, y) to wind.second
     }
+}
+
+fun part1(input: List<String>): Int {
+
+    val h = input.size
+    val w = input[0].length
+
+    val start = Point2D(1, 0)
+    val destination = Point2D(w - 2, h - 1)
+
+    val winds = readWinds(input)
 
     var minute = 0
     val childs = mutableSetOf<Point2D>()
@@ -80,7 +88,7 @@ fun part1(input: List<String>): Int {
     var notFound = true
 
     while (notFound) {
-        updateWindsPosition()
+        updateWindPositions(winds, w, h)
 
         val windsPositions = winds.map { it.first }.toSet()
 
@@ -117,5 +125,65 @@ fun part1(input: List<String>): Int {
 
 
 fun part2(input: List<String>): Int {
-    return input.size
+    val h = input.size
+    val w = input[0].length
+
+    val start = Point2D(1, 0)
+    val destination = Point2D(w - 2, h - 1)
+
+    val winds = readWinds(input)
+
+    var minute = 0
+    val childs = mutableSetOf<Point2D>()
+    childs.add(start)
+
+    // reached goal, come back, reached goal againe
+    val destinations = listOf(destination, start, destination)
+    var currentDestinationIndex = 0
+
+    outer@ while (currentDestinationIndex != 3) {
+        updateWindPositions(winds, w, h)
+        minute++
+
+        val windsPositions = winds.map { it.first }.toSet()
+
+        val newChilds = mutableSetOf<Point2D>()
+
+        var reachedCurrentDestination = false
+
+        for (childNode in childs) {
+
+            directionsClockwise.forEach { dir ->
+                val p = childNode + dir
+
+                if (p == destinations[currentDestinationIndex]) {
+                    reachedCurrentDestination = true
+                }
+
+                if (((p.x in 1 until w - 1) && (p.y in 1 until h - 1)) || p == start) {
+
+                    if (!windsPositions.contains(p)) {
+                        newChilds.add(p)
+                    }
+                }
+            }
+            if (!windsPositions.contains(childNode)) {
+                newChilds.add(childNode)
+            }
+        }
+
+        childs.clear()
+
+        if (reachedCurrentDestination) {
+            childs.add(destinations[currentDestinationIndex])
+            currentDestinationIndex++
+        } else {
+            childs.addAll(newChilds)
+        }
+
+        println("Minute: $minute, childCount: ${childs.size}, reachedCurrentDestination: $reachedCurrentDestination")
+
+
+    }
+    return minute
 }
