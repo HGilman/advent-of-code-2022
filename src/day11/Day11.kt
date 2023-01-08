@@ -1,13 +1,8 @@
 package day11
 
-import java.math.BigInteger
-
 fun main() {
-//    part1Test()
-//    partTwo()
-
-//    part1Test()
-    part2Test()
+    partTwo()
+//    partOne()
 }
 
 
@@ -67,6 +62,12 @@ fun part1Test() {
 
 fun part2Test() {
 
+    val leastCommonDivisor: Long = listOf(23L, 19, 13, 17).reduce(Long::times)
+
+    val worryLevelReduceOp = { l: Long ->
+        l % leastCommonDivisor
+    }
+
     //testing
     val m1 = Monkey(
         listOf(79, 98),
@@ -77,7 +78,7 @@ fun part2Test() {
         {
             if (it) 2 else 3
         },
-        false
+        worryLevelReduceOp = worryLevelReduceOp
     )
 
     val m2 = Monkey(
@@ -87,20 +88,19 @@ fun part2Test() {
         {
             if (it) 2 else 0
         },
-        false,
-        isAddOp = true
+        worryLevelReduceOp = worryLevelReduceOp
     )
 
     val m3 = Monkey(
         listOf(79, 60, 97),
         {
-         it * it
+            it * it
         },
         13,
         {
             if (it) 1 else 3
         },
-        false
+        worryLevelReduceOp = worryLevelReduceOp
     )
 
     val m4 = Monkey(
@@ -110,8 +110,7 @@ fun part2Test() {
         {
             if (it) 0 else 1
         },
-        false,
-        isAddOp = true
+        worryLevelReduceOp = worryLevelReduceOp
     )
 
     val monkeys = listOf(m1, m2, m3, m4)
@@ -120,7 +119,6 @@ fun part2Test() {
         for (m in monkeys) {
             m.round(monkeys, r)
         }
-        println()
     }
 
     println(m1.items.joinToString(" ") { it.toString() })
@@ -138,178 +136,106 @@ fun part2Test() {
 }
 
 
-//fun partOne() {
-//
-//    //testing
-//
-//    val m1 = Monkey(
-//        listOf(66, 79),
-//        { it * 11 },
-//        7,
-//        {
-//            if (it) 6 else 7
-//        })
-//
-//    val m2 = Monkey(
-//        listOf(84, 94, 94, 81, 98, 75),
-//        { it * 17 },
-//        13,
-//        {
-//            if (it) 5 else 2
-//        })
-//
-//    val m3 = Monkey(
-//        listOf(85, 79, 59, 64, 79, 95, 67),
-//        { it + 8 },
-//        5,
-//        {
-//            if (it) 4 else 5
-//        })
-//
-//    val m4 = Monkey(
-//        listOf(70),
-//        { it + 3 },
-//        19,
-//        {
-//            if (it) 6 else 0
-//        })
-//
-//    val m5 = Monkey(
-//        listOf(57, 69, 78, 78),
-//        { it + 4 },
-//        2,
-//        {
-//            if (it) 0 else 3
-//        })
-//
-//    val m6 = Monkey(
-//        listOf(65, 92, 60, 74, 72),
-//        { it + 7 },
-//        11,
-//        {
-//            if (it) 3 else 4
-//        })
-//
-//    val m7 = Monkey(
-//        listOf(77, 91, 91),
-//        { it * it },
-//        17,
-//        {
-//            if (it) 1 else 7
-//        })
-//
-//    val m8 = Monkey(
-//        listOf( 76, 58, 57, 55, 67, 77, 54, 99),
-//        { it + 6 },
-//        3,
-//        {
-//            if (it) 2 else 1
-//        })
-//
-//    val monkeys = listOf(m1, m2, m3, m4, m5, m6, m7, m8)
-//
-//    for (r in 0 until 20) {
-//        for (m in monkeys) {
-//            m.round(monkeys)
-//        }
-//    }
-//
-////    println(m1.items.joinToString(" ") { it.toString() })
-////    println(m2.items.joinToString(" ") { it.toString() })
-////    println(m3.items.joinToString(" ") { it.toString() })
-////    println(m4.items.joinToString(" ") { it.toString() })
-//
-//    val mostActive = monkeys.map { it.processedAmount }.sorted().takeLast(2)
-//    println(mostActive[0] * mostActive[1])
-//
-//}
-
-fun partTwo() {
-
-    //testing
-
-    val m1 = MonkeyBigInteger(
+fun solve(worryLevelReduceOp: (level: Long) -> Long, roundsAmount: Int) {
+    val m1 = Monkey(
         listOf(66, 79),
-        { it * BigInteger.valueOf(11) },
+        { it * 11 },
         7,
         {
             if (it) 6 else 7
-        })
+        },
+        worryLevelReduceOp = worryLevelReduceOp
+    )
 
-    val m2 = MonkeyBigInteger(
+    val m2 = Monkey(
         listOf(84, 94, 94, 81, 98, 75),
-        { it * BigInteger.valueOf(17) },
+        { it * 17 },
         13,
         {
             if (it) 5 else 2
-        })
+        },
+        worryLevelReduceOp = worryLevelReduceOp
+    )
 
-    val m3 = MonkeyBigInteger(
+    val m3 = Monkey(
         listOf(85, 79, 59, 64, 79, 95, 67),
-        { it + BigInteger.valueOf(8) },
+        { it + 8 },
         5,
         {
             if (it) 4 else 5
-        })
+        },
+        worryLevelReduceOp = worryLevelReduceOp
+    )
 
-    val m4 = MonkeyBigInteger(
+    val m4 = Monkey(
         listOf(70),
-        { it + BigInteger.valueOf(3) },
+        { it + 3 },
         19,
         {
             if (it) 6 else 0
-        })
+        },
+        worryLevelReduceOp = worryLevelReduceOp
+    )
 
-    val m5 = MonkeyBigInteger(
+    val m5 = Monkey(
         listOf(57, 69, 78, 78),
-        { it + BigInteger.valueOf(4) },
+        { it + 4 },
         2,
         {
             if (it) 0 else 3
-        })
+        },
+        worryLevelReduceOp = worryLevelReduceOp
+    )
 
-    val m6 = MonkeyBigInteger(
+    val m6 = Monkey(
         listOf(65, 92, 60, 74, 72),
-        { it + BigInteger.valueOf(7) },
+        { it + 7 },
         11,
         {
             if (it) 3 else 4
-        })
+        },
+        worryLevelReduceOp = worryLevelReduceOp
+    )
 
-    val m7 = MonkeyBigInteger(
+    val m7 = Monkey(
         listOf(77, 91, 91),
         { it * it },
         17,
         {
             if (it) 1 else 7
-        })
+        },
+        worryLevelReduceOp = worryLevelReduceOp
+    )
 
-    val m8 = MonkeyBigInteger(
+    val m8 = Monkey(
         listOf(76, 58, 57, 55, 67, 77, 54, 99),
-        { it + BigInteger.valueOf(6) },
+        { it + 6 },
         3,
         {
             if (it) 2 else 1
-        })
+        },
+        worryLevelReduceOp = worryLevelReduceOp
+    )
 
     val monkeys = listOf(m1, m2, m3, m4, m5, m6, m7, m8)
 
-    for (r in 0 until 10000) {
+    for (r in 0 until roundsAmount) {
         for (m in monkeys) {
-            m.round(monkeys)
+            m.round(monkeys, r)
         }
     }
 
-//    println(m1.items.joinToString(" ") { it.toString() })
-//    println(m2.items.joinToString(" ") { it.toString() })
-//    println(m3.items.joinToString(" ") { it.toString() })
-//    println(m4.items.joinToString(" ") { it.toString() })
-
     val mostActive = monkeys.map { it.processedAmount }.sorted().takeLast(2)
-    println(mostActive[0])
-    println(mostActive[1])
     println(mostActive[0] * mostActive[1])
+}
 
+fun partOne() {
+    solve({ l: Long -> l / 3 }, 20)
+}
+
+fun partTwo() {
+    val leastCommonDivisor: Long = listOf(7, 13, 5, 19, 2, 11, 17, 3L).reduce(Long::times)
+    solve({ l: Long -> l % leastCommonDivisor }, 10000)
 }
 
 class Monkey(
@@ -317,9 +243,7 @@ class Monkey(
     private val op: (Long) -> Long,
     private val divisibleBy: Long,
     private val throwTo: (Boolean) -> Int,
-    private val shouldDevideByTree: Boolean = true,
-    private val isAddOp: Boolean = false,
-    val divisors: MutableList<Int> = mutableListOf()
+    private val worryLevelReduceOp: (level: Long) -> Long = { level -> level / 3 }
 ) {
     private val id: Int
 
@@ -343,89 +267,16 @@ class Monkey(
 
     // processing all items in queue
     fun round(monkeys: List<Monkey>, r: Int) {
-
-        println("Monkey: $id, round: $r")
-
         while (items.isNotEmpty()) {
             val item = items.removeFirst()
-            var inspectedItem = op.invoke(item)
-
-            if (shouldDevideByTree) {
-                inspectedItem /= 3
-            }
+            val inspectedItem = worryLevelReduceOp.invoke(op.invoke(item))
 
             val isDivisible = inspectedItem % divisibleBy == 0L
-
-            while (inspectedItem % divisibleBy == 0L) {
-                inspectedItem /= divisibleBy
-            }
-
-            if (!isDivisible) {
-                inspectedItem %= divisibleBy
-            }
 
             val monkeyNumber = throwTo.invoke(isDivisible)
 
             monkeys[monkeyNumber].receiveItem(inspectedItem)
             processedAmount++
-
-            println(
-                "item: $item, inspected item: $inspectedItem, " +
-                        "divisibleBy: $divisibleBy, isDivisible: $isDivisible"
-            )
-        }
-        println()
-    }
-}
-
-class MonkeyBigInteger(
-    initItems: List<Long>,
-    private val op: (BigInteger) -> BigInteger,
-    private val divisibleBy: Long,
-    private val throwTo: (Boolean) -> Int
-) {
-
-    var processedAmount: BigInteger = BigInteger.ZERO
-        private set
-
-    val items = ArrayDeque<BigInteger>(initItems.map { BigInteger.valueOf(it) })
-
-    fun receiveItem(item: BigInteger) {
-        items.addLast(item)
-    }
-
-    // processing all items in queue
-    fun round(monkeys: List<MonkeyBigInteger>) {
-        while (items.isNotEmpty()) {
-            val item = items.removeFirst()
-            val inspectedItem = op.invoke(item)
-            val monkeyNumber = throwTo.invoke(inspectedItem.mod(BigInteger.valueOf(divisibleBy)) == BigInteger.ZERO)
-            monkeys[monkeyNumber].receiveItem(inspectedItem)
-            processedAmount++
         }
     }
-}
-
-//val divisors: MutableMap<Long, List<Long>> = mutableMapOf()
-//
-fun getDivisors(n: Long): List<Long> {
-    var cur = 1L
-    val res = mutableListOf<Long>()
-    res.add(cur)
-
-    cur++
-    var last = n
-    while (cur * cur <= n) {
-
-        if (last % cur == 0L) {
-            last /= cur
-            res.add(cur)
-        } else {
-            cur++
-        }
-    }
-    if (n > 1) {
-        res.add(n)
-    }
-    return res
 }

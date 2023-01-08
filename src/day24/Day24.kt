@@ -141,7 +141,7 @@ fun part2(input: List<String>): Int {
     val destinations = listOf(destination, start, destination)
     var currentDestinationIndex = 0
 
-    outer@ while (currentDestinationIndex != 3) {
+    while (currentDestinationIndex != 3) {
         updateWindPositions(winds, w, h)
         minute++
 
@@ -171,7 +171,6 @@ fun part2(input: List<String>): Int {
                 newChilds.add(childNode)
             }
         }
-
         childs.clear()
 
         if (reachedCurrentDestination) {
@@ -180,10 +179,7 @@ fun part2(input: List<String>): Int {
         } else {
             childs.addAll(newChilds)
         }
-
         println("Minute: $minute, childCount: ${childs.size}, reachedCurrentDestination: $reachedCurrentDestination")
-
-
     }
     return minute
 }
